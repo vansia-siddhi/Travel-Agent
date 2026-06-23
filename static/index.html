@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travel Planner Agent — Self-Revising AI</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="badge"><span class="badge-dot"></span>Self-Revising AI Agent</div>
+    <h1>An Agent That <em>Checks Its Own Work</em><br>and Tries Again</h1>
+    <p class="subtitle">Give it a destination, budget, and days. It drafts an itinerary, validates it against your constraints, and automatically revises if it fails — no human in the loop.</p>
+
+    <div class="loop-diagram">
+      <div class="loop-chip">🧠 Propose</div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-chip">✅ Validate</div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-chip">🔁 Revise</div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-chip">📋 Finalize</div>
+    </div>
+  </div>
+
+  <div class="setup-alert" id="setupAlert">
+    ⚠️ <strong>Server setup needed:</strong> <code>GROQ_API_KEY</code> isn't set on this server.
+    Get a free key at <strong>console.groq.com</strong>, then set it and restart the Flask app.
+  </div>
+
+  <div class="card">
+    <div class="field-label">Trip Details</div>
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Destination</label>
+        <input type="text" class="form-input" id="destInput" value="Goa, India">
+      </div>
+      <div class="form-field">
+        <label>Days</label>
+        <input type="number" class="form-input" id="daysInput" value="3" min="1" max="10">
+      </div>
+      <div class="form-field">
+        <label>Budget (₹ INR)</label>
+        <input type="number" class="form-input" id="budgetInput" value="15000" min="1000" step="500">
+      </div>
+    </div>
+    <div class="field-label" style="margin-top:6px">Interests</div>
+    <div class="interest-chips" id="interestChips">
+      <div class="interest-chip selected" data-val="beaches">🏖️ Beaches</div>
+      <div class="interest-chip selected" data-val="food">🍽️ Food</div>
+      <div class="interest-chip" data-val="nightlife">🌃 Nightlife</div>
+      <div class="interest-chip" data-val="culture">🏛️ Culture</div>
+      <div class="interest-chip" data-val="adventure">🧗 Adventure</div>
+      <div class="interest-chip" data-val="shopping">🛍️ Shopping</div>
+      <div class="interest-chip" data-val="nature">🌿 Nature</div>
+    </div>
+    <button class="btn-primary" id="runBtn" onclick="runPlanner()">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Plan My Trip
+    </button>
+  </div>
+
+  <div id="errorBox"></div>
+
+  <div id="feedSection">
+    <div class="feed-header">
+      <div class="feed-status-dot" id="statusDot"></div>
+      <div class="feed-title" id="feedTitle">Agent working...</div>
+    </div>
+    <div class="attempts-col" id="attemptsCol"></div>
+
+    <div class="itinerary-card" id="itineraryCard">
+      <div class="itinerary-title">🗺️ <span id="itineraryDest">Final Itinerary</span></div>
+      <div id="dayBlocks"></div>
+      <div class="total-row">
+        <span>Total Estimated Cost</span>
+        <span class="amount" id="totalAmount">$0</span>
+      </div>
+      <div class="action-bar">
+        <button class="btn-sec" onclick="downloadItinerary()">⬇️ Download .json</button>
+        <button class="btn-sec" onclick="resetForm()">🔄 Plan Another Trip</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <strong>🎓 Learning Note:</strong> The "validate" step uses plain Python rules (day count, budget math) — not another LLM call. This shows how agents combine deterministic code with AI reasoning: the LLM proposes, code judges, and the LLM revises based on specific, structured feedback. Uses Groq's free API, no paid keys required.
+  </div>
+
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
